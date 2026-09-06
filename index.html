@@ -293,66 +293,57 @@ function formatVND(num) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(num);
 }
 
-// --- LOGIC CHO CHATBOT AI GIẢ LẬP ---
-const chatBox = document.getElementById('chatBox');
-const chatInput = document.getElementById('chatInput');
-
-function appendUserMessage(msg) {
-    const div = document.createElement('div');
-    div.className = "flex gap-3 items-start flex-row-reverse";
-    div.innerHTML = `
-        <div class="bg-emerald-500/20 text-emerald-300 p-3 rounded-2xl rounded-tr-sm max-w-[85%] text-sm leading-relaxed border border-emerald-500/30">
-            ${msg}
-        </div>`;
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function appendAIMessage(msg) {
-    const div = document.createElement('div');
-    div.className = "flex gap-3 items-start";
-    div.innerHTML = `
-        <div class="bg-gray-800 p-2 rounded-full text-xl border border-gray-600">🤖</div>
-        <div class="bg-gray-800 text-gray-300 p-3 rounded-2xl rounded-tl-sm max-w-[85%] text-sm leading-relaxed border border-gray-700">
-            ${msg}
-        </div>`;
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function getAIResponse(input) {
-    const text = input.toLowerCase();
-    let incomeInputElem = document.getElementById('incomeInput');
-    let income = incomeInputElem ? incomeInputElem.value : '';
-    let incomeText = income ? `Ngân sách hiện tại bạn đang nhập là ${formatVND(income)}.` : `Bạn chưa nhập Thu nhập ở bảng bên cạnh kìa!`;
-
-    if (text.includes('quần áo') || text.includes('shopee') || text.includes('mua sắm') || text.includes('sale')) {
-        return `Khoan! Dừng khoảng chừng là 2 giây 🛑. Quần áo và mua sắm thuộc <strong>Quỹ Tận hưởng (30%)</strong>. Áp dụng ngay quy tắc Delay 24h đi. Bỏ vào giỏ hàng rồi đi ngủ, mai dậy còn thèm và còn tiền thì hẵng chốt!`;
-    } else if (text.includes('trọ') || text.includes('điện nước') || text.includes('ăn')) {
-        return `Ca này chuẩn bài! Tiền trọ, ăn uống thuộc <strong>Quỹ Sinh tồn (50%)</strong>. Đây là quỹ bất khả xâm phạm. Dù có nghèo cũng phải đóng tiền trọ trước nha, đừng để chủ trọ réo tên! ${incomeText}`;
-    } else if (text.includes('concert') || text.includes('đu idol') || text.includes('du lịch') || text.includes('chơi')) {
-        return `Đu concert/du lịch thì trích từ <strong>Quỹ Tận hưởng (30%)</strong> nhé. Nhưng nhớ tính cả tiền vé, vé di chuyển và ăn uống. Nếu ngân sách lố thì đành mượn tạm Quỹ Tương lai (20%) nhưng tháng sau phải thắt lưng buộc bụng bù đắp ngay!`;
-    } else if (text.includes('tiết kiệm') || text.includes('đầu tư') || text.includes('tương lai')) {
-        return `Tuyệt vời! Cất ống heo luôn được trích từ <strong>Quỹ Tương lai (20%)</strong>. Cứ tự động cắt 20% cất đi ngay khi có tiền là bạn đã hơn khối Gen Z ngoài kia rồi đó! 🚀`;
-    } else {
-        return `Ca này thú vị nha! Nguyên tắc bất di bất dịch của $$ VÍ: Hãy chắc chắn bạn đã dành ra 20% cất đi phòng thân, 50% cho sinh tồn (nhà, ăn), còn lại 30% cứ bung lụa thoải mái nhé!`;
-    }
-}
-
+// --- PHIÊN BẢN CHATBOT AN TOÀN TUYỆT ĐỐI ---
 function sendMessage() {
-    if (!chatInput || !chatBox) return;
+    const chatBox = document.getElementById('chatBox');
+    const chatInput = document.getElementById('chatInput');
+    
+    if (!chatBox || !chatInput) {
+        console.error("Không tìm thấy chatBox hoặc chatInput!");
+        return;
+    }
+    
     const text = chatInput.value.trim();
-    if(!text) return;
-    appendUserMessage(text);
+    if (!text) return;
+
+    // 1. Hiển thị tin nhắn người dùng
+    const userDiv = document.createElement('div');
+    userDiv.className = "flex gap-3 items-start flex-row-reverse";
+    userDiv.innerHTML = `<div class="bg-emerald-500/20 text-emerald-300 p-3 rounded-2xl rounded-tr-sm max-w-[85%] text-sm leading-relaxed border border-emerald-500/30">${text}</div>`;
+    chatBox.appendChild(userDiv);
     chatInput.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // 2. Xử lý phản hồi AI sau 0.5 giây
     setTimeout(() => {
-        const response = getAIResponse(text);
-        appendAIMessage(response);
-    }, 800);
+        const lowerText = text.toLowerCase();
+        let reply = "Ca này thú vị nha! Nguyên tắc bất di bất dịch của $$ VÍ: Dành 20% tiết kiệm, 50% sinh tồn và 30% tận hưởng nhé!";
+        
+        if (lowerText.includes('quần áo') || lowerText.includes('shopee') || lowerText.includes('mua sắm') || lowerText.includes('sale')) {
+            reply = "Khoan! Dừng khoảng chừng là 2 giây 🛑. Mua sắm thuộc <strong>Quỹ Tận hưởng (30%)</strong>. Áp dụng ngay quy tắc Delay 24h đi, bỏ vào giỏ hàng rồi ngủ qua đêm hẵng chốt!";
+        } else if (lowerText.includes('trọ') || lowerText.includes('điện nước') || lowerText.includes('ăn')) {
+            reply = "Ca này chuẩn bài! Tiền trọ và ăn uống thuộc <strong>Quỹ Sinh tồn (50%)</strong> - quỹ bất khả xâm phạm. Ưu tiên thanh toán khoản này trước tiên nha!";
+        } else if (lowerText.includes('concert') || lowerText.includes('đu idol') || lowerText.includes('du lịch') || lowerText.includes('chơi')) {
+            reply = "Đu concert hay du lịch trích từ <strong>Quỹ Tận hưởng (30%)</strong> nhé. Nhớ tính toán kỹ để không bị lố ngân sách sang Quỹ Tương lai nha!";
+        } else if (lowerText.includes('tiết kiệm') || lowerText.includes('đầu tư') || lowerText.includes('tương lai')) {
+            reply = "Tuyệt vời! Cất ống heo luôn thuộc <strong>Quỹ Tương lai (20%)</strong>. Cứ tự động trích ra ngay khi có tiền là chuẩn bài Gen Z quản lý tài chính!";
+        }
+
+        const aiDiv = document.createElement('div');
+        aiDiv.className = "flex gap-3 items-start";
+        aiDiv.innerHTML = `
+            <div class="bg-gray-800 p-2 rounded-full text-xl border border-gray-600">🤖</div>
+            <div class="bg-gray-800 text-gray-300 p-3 rounded-2xl rounded-tl-sm max-w-[85%] text-sm leading-relaxed border border-gray-700">${reply}</div>
+        `;
+        chatBox.appendChild(aiDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }, 500);
 }
 
 function handleEnter(e) {
-    if (e.key === 'Enter') sendMessage();
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
 }
 
         // --- CẤU HÌNH CHART.JS ---
