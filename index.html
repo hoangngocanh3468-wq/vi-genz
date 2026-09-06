@@ -288,65 +288,72 @@
             document.getElementById('val20').innerText = formatVND(amount * 0.2);
         }
 
-        // --- LOGIC CHO CHATBOT AI GIẢ LẬP ---
-        const chatBox = document.getElementById('chatBox');
-        const chatInput = document.getElementById('chatInput');
+       // --- BỔ SUNG HÀM ĐỊNH DẠNG TIỀN TỆ (Thiếu cái này nên code cũ bị lỗi ngầm) ---
+function formatVND(num) {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(num);
+}
 
-        function appendUserMessage(msg) {
-            const div = document.createElement('div');
-            div.className = "flex gap-3 items-start flex-row-reverse";
-            div.innerHTML = `
-                <div class="bg-emerald-500/20 text-emerald-300 p-3 rounded-2xl rounded-tr-sm max-w-[85%] text-sm leading-relaxed border border-emerald-500/30">
-                    ${msg}
-                </div>`;
-            chatBox.appendChild(div);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+// --- LOGIC CHO CHATBOT AI GIẢ LẬP ---
+const chatBox = document.getElementById('chatBox');
+const chatInput = document.getElementById('chatInput');
 
-        function appendAIMessage(msg) {
-            const div = document.createElement('div');
-            div.className = "flex gap-3 items-start";
-            div.innerHTML = `
-                <div class="bg-gray-800 p-2 rounded-full text-xl border border-gray-600">🤖</div>
-                <div class="bg-gray-800 text-gray-300 p-3 rounded-2xl rounded-tl-sm max-w-[85%] text-sm leading-relaxed border border-gray-700">
-                    ${msg}
-                </div>`;
-            chatBox.appendChild(div);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+function appendUserMessage(msg) {
+    const div = document.createElement('div');
+    div.className = "flex gap-3 items-start flex-row-reverse";
+    div.innerHTML = `
+        <div class="bg-emerald-500/20 text-emerald-300 p-3 rounded-2xl rounded-tr-sm max-w-[85%] text-sm leading-relaxed border border-emerald-500/30">
+            ${msg}
+        </div>`;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
 
-        function getAIResponse(input) {
-            const text = input.toLowerCase();
-            let income = document.getElementById('incomeInput').value;
-            let incomeText = income ? `Ngân sách hiện tại bạn đang nhập là ${formatVND(income)}.` : `Bạn chưa nhập Thu nhập ở bảng bên cạnh kìa!`;
+function appendAIMessage(msg) {
+    const div = document.createElement('div');
+    div.className = "flex gap-3 items-start";
+    div.innerHTML = `
+        <div class="bg-gray-800 p-2 rounded-full text-xl border border-gray-600">🤖</div>
+        <div class="bg-gray-800 text-gray-300 p-3 rounded-2xl rounded-tl-sm max-w-[85%] text-sm leading-relaxed border border-gray-700">
+            ${msg}
+        </div>`;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
 
-            if (text.includes('quần áo') || text.includes('shopee') || text.includes('mua sắm') || text.includes('sale')) {
-                return `Khoan! Dừng khoảng chừng là 2 giây 🛑. Quần áo và mua sắm thuộc <strong>Quỹ Tận hưởng (30%)</strong>. Áp dụng ngay quy tắc Delay 24h đi. Bỏ vào giỏ hàng rồi đi ngủ, mai dậy còn thèm và còn tiền thì hẵng chốt!`;
-            } else if (text.includes('trọ') || text.includes('điện nước') || text.includes('ăn')) {
-                return `Ca này chuẩn bài! Tiền trọ, ăn uống thuộc <strong>Quỹ Sinh tồn (50%)</strong>. Đây là quỹ bất khả xâm phạm. Dù có nghèo cũng phải đóng tiền trọ trước nha, đừng để chủ trọ réo tên! ${incomeText}`;
-            } else if (text.includes('concert') || text.includes('đu idol') || text.includes('du lịch') || text.includes('chơi')) {
-                return `Đu concert/du lịch thì trích từ <strong>Quỹ Tận hưởng (30%)</strong> nhé. Nhưng nhớ tính cả tiền vé, vé di chuyển và ăn uống. Nếu ngân sách lố thì đành mượn tạm Quỹ Tương lai (20%) nhưng tháng sau phải thắt lưng buộc bụng bù đắp ngay!`;
-            } else if (text.includes('tiết kiệm') || text.includes('đầu tư') || text.includes('tương lai')) {
-                return `Tuyệt vời! Cất ống heo luôn được trích từ <strong>Quỹ Tương lai (20%)</strong>. Cứ tự động cắt 20% cất đi ngay khi có tiền là bạn đã hơn khối Gen Z ngoài kia rồi đó! 🚀`;
-            } else {
-                return `Ca này thú vị nha! Nguyên tắc bất di bất dịch của $$ VÍ: Hãy chắc chắn bạn đã dành ra 20% cất đi phòng thân, 50% cho sinh tồn (nhà, ăn), còn lại 30% cứ bung lụa thoải mái nhé!`;
-            }
-        }
+function getAIResponse(input) {
+    const text = input.toLowerCase();
+    let incomeInputElem = document.getElementById('incomeInput');
+    let income = incomeInputElem ? incomeInputElem.value : '';
+    let incomeText = income ? `Ngân sách hiện tại bạn đang nhập là ${formatVND(income)}.` : `Bạn chưa nhập Thu nhập ở bảng bên cạnh kìa!`;
 
-        function sendMessage() {
-            const text = chatInput.value.trim();
-            if(!text) return;
-            appendUserMessage(text);
-            chatInput.value = '';
-            setTimeout(() => {
-                const response = getAIResponse(text);
-                appendAIMessage(response);
-            }, 800);
-        }
+    if (text.includes('quần áo') || text.includes('shopee') || text.includes('mua sắm') || text.includes('sale')) {
+        return `Khoan! Dừng khoảng chừng là 2 giây 🛑. Quần áo và mua sắm thuộc <strong>Quỹ Tận hưởng (30%)</strong>. Áp dụng ngay quy tắc Delay 24h đi. Bỏ vào giỏ hàng rồi đi ngủ, mai dậy còn thèm và còn tiền thì hẵng chốt!`;
+    } else if (text.includes('trọ') || text.includes('điện nước') || text.includes('ăn')) {
+        return `Ca này chuẩn bài! Tiền trọ, ăn uống thuộc <strong>Quỹ Sinh tồn (50%)</strong>. Đây là quỹ bất khả xâm phạm. Dù có nghèo cũng phải đóng tiền trọ trước nha, đừng để chủ trọ réo tên! ${incomeText}`;
+    } else if (text.includes('concert') || text.includes('đu idol') || text.includes('du lịch') || text.includes('chơi')) {
+        return `Đu concert/du lịch thì trích từ <strong>Quỹ Tận hưởng (30%)</strong> nhé. Nhưng nhớ tính cả tiền vé, vé di chuyển và ăn uống. Nếu ngân sách lố thì đành mượn tạm Quỹ Tương lai (20%) nhưng tháng sau phải thắt lưng buộc bụng bù đắp ngay!`;
+    } else if (text.includes('tiết kiệm') || text.includes('đầu tư') || text.includes('tương lai')) {
+        return `Tuyệt vời! Cất ống heo luôn được trích từ <strong>Quỹ Tương lai (20%)</strong>. Cứ tự động cắt 20% cất đi ngay khi có tiền là bạn đã hơn khối Gen Z ngoài kia rồi đó! 🚀`;
+    } else {
+        return `Ca này thú vị nha! Nguyên tắc bất di bất dịch của $$ VÍ: Hãy chắc chắn bạn đã dành ra 20% cất đi phòng thân, 50% cho sinh tồn (nhà, ăn), còn lại 30% cứ bung lụa thoải mái nhé!`;
+    }
+}
 
-        function handleEnter(e) {
-            if (e.key === 'Enter') sendMessage();
-        }
+function sendMessage() {
+    if (!chatInput || !chatBox) return;
+    const text = chatInput.value.trim();
+    if(!text) return;
+    appendUserMessage(text);
+    chatInput.value = '';
+    setTimeout(() => {
+        const response = getAIResponse(text);
+        appendAIMessage(response);
+    }, 800);
+}
+
+function handleEnter(e) {
+    if (e.key === 'Enter') sendMessage();
+}
 
         // --- CẤU HÌNH CHART.JS ---
         Chart.defaults.color = '#94A3B8';
