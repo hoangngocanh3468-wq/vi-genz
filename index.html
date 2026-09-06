@@ -327,7 +327,15 @@ function sendMessage() {
             reply = "Đu concert hay du lịch trích từ <strong>Quỹ Tận hưởng (30%)</strong> nhé. Nhớ tính toán kỹ để không bị lố ngân sách sang Quỹ Tương lai nha!";
         } else if (lowerText.includes('tiết kiệm') || lowerText.includes('đầu tư') || lowerText.includes('tương lai')) {
             reply = "Tuyệt vời! Cất ống heo luôn thuộc <strong>Quỹ Tương lai (20%)</strong>. Cứ tự động trích ra ngay khi có tiền là chuẩn bài Gen Z quản lý tài chính!";
-        }
+        } else {
+        const fallbackResponses = [
+            "Ca này hơi khó đoán nha! Cậu nói rõ hơn món đồ cậu định chi tiền được không?",
+            "Cứ bám sát nguyên tắc: 50% sinh tồn, 30% tận hưởng và 20% tương lai. Cậu định chi tiêu cho việc gì nào?",
+            "Haha, với trường hợp này, cậu thử nghĩ xem nó là 'Nhu cầu' hay 'Mong muốn' nhé!",
+            "Mọi quyết định chi tiền đều cần cân nhắc kỹ. Cậu thử gõ các từ khóa như 'tiền trọ', 'mua sắm', 'đi chơi' xem mình tư vấn chuẩn không nha!"
+        ];
+        reply = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+    }
 
         const aiDiv = document.createElement('div');
         aiDiv.className = "flex gap-3 items-start";
